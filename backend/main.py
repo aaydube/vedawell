@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from langchain.chains import RetrievalQA
 from langchain_huggingface import HuggingFaceEndpoint
 from vedawell import create_vector_store_from_pdfs, load_vector_store
+from fastapi.middleware.cors import CORSMiddleware
 import os
 
 # Ensure vector store is created first (this should only be run once)
@@ -11,6 +12,13 @@ if not os.path.exists("faiss_index"):
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 # STEP 1: Load the saved vector store
 db = load_vector_store()
 
