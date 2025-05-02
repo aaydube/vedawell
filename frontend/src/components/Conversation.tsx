@@ -33,7 +33,7 @@ const Conversation: React.FC = () => {
         <p className="text-gray-500 mb-6 max-w-sm">
           Type a message below to start exploring ancient Ayurvedic wisdom with VedaWell.
         </p>
-        <div className="p-4 rounded-lg bg-white shadow-sm border border-amber-200 max-w-md text-center">
+        <div className="p-4 rounded-lg text-sm md:text-base bg-white shadow-sm border border-amber-200 max-w-md text-center">
           <p className="mb-3 text-lg">
             नमस्ते 🙏 Welcome to VedaWell
           </p>
