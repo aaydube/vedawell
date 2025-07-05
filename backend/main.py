@@ -5,7 +5,9 @@ from langchain_huggingface import HuggingFaceEndpoint
 from vedawell import create_vector_store_from_pdfs, load_vector_store
 from fastapi.middleware.cors import CORSMiddleware
 import os
-
+from dotenv import load_dotenv
+from langchain_groq import ChatGroq
+load_dotenv()
 # Ensure vector store is created first (this should only be run once)
 if not os.path.exists("faiss_index"):
     create_vector_store_from_pdfs("pdfs")
@@ -23,13 +25,14 @@ app.add_middleware(
 db = load_vector_store()
 
 # STEP 2: Setup LLM with the correct parameters
-llm = HuggingFaceEndpoint(
-    endpoint_url="https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta",
-    huggingfacehub_api_token=os.environ.get("HUGGINGFACE_API_TOKEN"),  # Make sure to set this environment variable
-    temperature=0.5,  # Direct parameter, not in model_kwargs
-    max_new_tokens=512,  # Direct parameter, not in model_kwargs
-    task="text-generation"  # Required parameter
-)
+# llm = HuggingFaceEndpoint(
+#     endpoint_url="https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta",
+#     huggingfacehub_api_token=os.environ.get("HUGGINGFACE_API_TOKEN"),  # Make sure to set this environment variable
+#     temperature=0.5,  # Direct parameter, not in model_kwargs
+#     max_new_tokens=512,  # Direct parameter, not in model_kwargs
+#     task="text-generation"  # Required parameter
+# )
+llm = ChatGroq(model="llama-3.1-8b-instant")
 
 # STEP 3: Create Retrieval QA chain
 qa_chain = RetrievalQA.from_chain_type(
