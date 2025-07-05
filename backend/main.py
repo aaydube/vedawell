@@ -32,19 +32,19 @@ db = load_vector_store()
 #     max_new_tokens=512,  # Direct parameter, not in model_kwargs
 #     task="text-generation"  # Required parameter
 # )
-llm = ChatGroq(model="llama-3.1-8b-instant")
-
-# STEP 3: Create Retrieval QA chain
-qa_chain = RetrievalQA.from_chain_type(
-    llm=llm, 
-    chain_type="stuff", 
-    retriever=db.as_retriever()
-)
 
 class QueryRequest(BaseModel):
     query: str
 
 @app.post("/ask")
 def ask_question(request: QueryRequest):
+    llm = ChatGroq(model="llama-3.1-8b-instant")
+
+    # STEP 3: Create Retrieval QA chain
+    qa_chain = RetrievalQA.from_chain_type(
+        llm=llm, 
+        chain_type="stuff", 
+        retriever=db.as_retriever()
+    )
     answer = qa_chain.run({"query": request.query})
     return {"answer": answer}
