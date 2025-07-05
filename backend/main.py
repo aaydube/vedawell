@@ -22,7 +22,6 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 # STEP 1: Load the saved vector store
-db = load_vector_store()
 
 # STEP 2: Setup LLM with the correct parameters
 # llm = HuggingFaceEndpoint(
@@ -38,6 +37,7 @@ class QueryRequest(BaseModel):
 
 @app.post("/ask")
 def ask_question(request: QueryRequest):
+    db = load_vector_store()
     llm = ChatGroq(model="llama-3.1-8b-instant")
 
     # STEP 3: Create Retrieval QA chain
