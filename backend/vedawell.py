@@ -1,5 +1,5 @@
 from langchain_community.vectorstores import FAISS
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
 import os
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -26,13 +26,17 @@ def create_vector_store_from_pdfs(pdf_folder_path: str):
     docs = text_splitter.split_documents(all_docs)
 
     # Embed and create FAISS index
-    embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-small-en")
+    embeddings = HuggingFaceInferenceAPIEmbeddings(
+        api_key=os.getenv("HF_TOKEN"),
+        model_name="BAAI/bge-small-en")
     db = FAISS.from_documents(docs, embeddings)
     db.save_local(DB_FAISS_PATH)
     print(f"✅ Vector store saved to {DB_FAISS_PATH}")
 
 def load_vector_store():
-    embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-small-en")
+    embeddings = HuggingFaceInferenceAPIEmbeddings(
+        api_key=os.getenv("HF_TOKEN"),
+        model_name="BAAI/bge-small-en")
     if not os.path.exists(DB_FAISS_PATH):
         raise ValueError(f"❌ Vector store not found at {DB_FAISS_PATH}. Please run create_vector_store_from_pdfs().")
     return FAISS.load_local(DB_FAISS_PATH, embeddings, allow_dangerous_deserialization=True)
