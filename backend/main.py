@@ -1,10 +1,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from langchain.chains import RetrievalQA
-from langchain_huggingface import HuggingFaceEndpoint
 from vedawell import load_vector_store
 from fastapi.middleware.cors import CORSMiddleware
-import os
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 load_dotenv()
@@ -22,6 +20,7 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 # STEP 1: Load the saved vector store
+db = load_vector_store()
 
 # STEP 2: Setup LLM with the correct parameters
 # llm = HuggingFaceEndpoint(
@@ -31,20 +30,19 @@ app.add_middleware(
 #     max_new_tokens=512,  # Direct parameter, not in model_kwargs
 #     task="text-generation"  # Required parameter
 # )
+llm = ChatGroq(model="llama-3.1-8b-instant")
+
+# STEP 3: Create Retrieval QA chain
+qa_chain = RetrievalQA.from_chain_type(
+    llm=llm, 
+    chain_type="stuff", 
+    retriever=db.as_retriever()
+)
 
 class QueryRequest(BaseModel):
     query: str
 
 @app.post("/ask")
 def ask_question(request: QueryRequest):
-    db = load_vector_store()
-    llm = ChatGroq(model="llama-3.1-8b-instant")
-
-    # STEP 3: Create Retrieval QA chain
-    qa_chain = RetrievalQA.from_chain_type(
-        llm=llm, 
-        chain_type="stuff", 
-        retriever=db.as_retriever()
-    )
     answer = qa_chain.run({"query": request.query})
     return {"answer": answer}
