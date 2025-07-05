@@ -2,15 +2,15 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from langchain.chains import RetrievalQA
 from langchain_huggingface import HuggingFaceEndpoint
-from vedawell import create_vector_store_from_pdfs, load_vector_store
+from vedawell import load_vector_store
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 load_dotenv()
 # Ensure vector store is created first (this should only be run once)
-if not os.path.exists("faiss_index"):
-    create_vector_store_from_pdfs("pdfs")
+# if not os.path.exists("faiss_index"):
+#     create_vector_store_from_pdfs("pdfs")
 
 app = FastAPI()
 
