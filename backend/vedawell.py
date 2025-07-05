@@ -32,7 +32,7 @@ DB_FAISS_PATH = "faiss_index"
 #     print(f"✅ Vector store saved to {DB_FAISS_PATH}")
 
 def load_vector_store():
-    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    embeddings = HuggingFaceEmbeddings(model_name="Xenova/all-MiniLM-L6-v2")
     if not os.path.exists(DB_FAISS_PATH):
         raise ValueError(f"❌ Vector store not found at {DB_FAISS_PATH}. Please run create_vector_store_from_pdfs().")
     return FAISS.load_local(DB_FAISS_PATH, embeddings, allow_dangerous_deserialization=True)
