@@ -33,7 +33,6 @@ DB_FAISS_PATH = "faiss_index"
 
 def load_vector_store():
     embeddings = HuggingFaceEmbeddings(
-        api_key=os.getenv("HUGGINGFACE_API_TOKEN"),
         model_name="sentence-transformers/all-MiniLM-L6-v2")
     if not os.path.exists(DB_FAISS_PATH):
         raise ValueError(f"❌ Vector store not found at {DB_FAISS_PATH}. Please run create_vector_store_from_pdfs().")
