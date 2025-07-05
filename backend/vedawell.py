@@ -1,42 +1,40 @@
 from langchain_community.vectorstores import FAISS
-from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
-import os
+from langchain_cohere import CohereEmbeddings
 from langchain_community.document_loaders import PyPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from pathlib import Path
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-DB_FAISS_PATH = "faiss_index"
+def create_vector_store_from_pdfs(folder_path):
+    docs = []
+    for file in os.listdir(folder_path):
+        if file.endswith(".pdf"):
+            loader = PyPDFLoader(os.path.join(folder_path, file))
+            docs.extend(loader.load())
 
-def create_vector_store_from_pdfs(pdf_folder_path: str):
-    # Load all PDFs from the folder
-    pdf_files = list(Path(pdf_folder_path).glob("*.pdf"))
-    if not pdf_files:
-        raise ValueError("❌ No PDF files found in the given folder.")
+    texts = [doc.page_content for doc in docs]
+    print(f"[INFO] Loaded {len(texts)} documents.")
 
-    all_docs = []
-    for pdf in pdf_files:
-        loader = PyPDFLoader(str(pdf))
-        documents = loader.load()
-        all_docs.extend(documents)
+    if not texts:
+        raise ValueError("No valid content extracted from PDFs")
 
-    print(f"✅ Loaded {len(pdf_files)} PDFs with total {len(all_docs)} pages")
+    embeddings = CohereEmbeddings(
+    model="embed-v4.0",
+    cohere_api_key=os.getenv("COHERE_API_KEY")
+)
 
-    # Split documents
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
-    docs = text_splitter.split_documents(all_docs)
+    db = FAISS.from_texts(texts, embeddings)
+    db.save_local("faiss_index")
+    print("[INFO] Vector store created and saved successfully.")
 
-    # Embed and create FAISS index
-    embeddings = HuggingFaceInferenceAPIEmbeddings(
-        api_key=os.getenv("HF_TOKEN"),
-        model_name="BAAI/bge-small-en")
-    db = FAISS.from_documents(docs, embeddings)
-    db.save_local(DB_FAISS_PATH)
-    print(f"✅ Vector store saved to {DB_FAISS_PATH}")
 
 def load_vector_store():
-    embeddings = HuggingFaceInferenceAPIEmbeddings(
-        api_key=os.getenv("HF_TOKEN"),
-        model_name="BAAI/bge-small-en")
-    if not os.path.exists(DB_FAISS_PATH):
-        raise ValueError(f"❌ Vector store not found at {DB_FAISS_PATH}. Please run create_vector_store_from_pdfs().")
-    return FAISS.load_local(DB_FAISS_PATH, embeddings, allow_dangerous_deserialization=True)
+    cohere_api_key = os.getenv("COHERE_API_KEY")
+    if not cohere_api_key:
+        raise ValueError("COHERE_API_KEY is not set in environment variables.")
+
+    embeddings = CohereEmbeddings(
+    model="embed-v4.0",
+    cohere_api_key=cohere_api_key
+)
+    return FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
