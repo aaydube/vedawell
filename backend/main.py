@@ -40,5 +40,5 @@ class QueryRequest(BaseModel):
 
 @app.post("/ask")
 def ask_question(request: QueryRequest):
-    answer = qa_chain.run({"query": request.query})
-    return {"answer": answer}
+    answer = qa_chain.invoke({"query": request.query})
+    return {"answer": answer['result']}

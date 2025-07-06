@@ -4,7 +4,7 @@ import ChatInput from './ChatInput';
 
 const ChatInterface: React.FC = () => {
   return (
-    <div className="flex min-h-[100dvh] flex-col bg-amber-100">
+    <div className="flex min-h-[100dvh] flex-col bg-amber-50">
       <header className="h-14 border-b rounded-b-2xl border-amber-200 flex items-center px-4 bg-white/30 backdrop-blur-2xl sticky top-0 z-10">
         <h1 className="text-xl md:text-xl font-semibold font-mono text-amber-800 tracking-wide">VedaWell</h1>
       </header>
