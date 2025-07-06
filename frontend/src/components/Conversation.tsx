@@ -12,8 +12,8 @@ const Conversation: React.FC = () => {
 
   if (!currentConversation) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-4 text-center">
-        <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mb-4">
+      <div className="flex-1 flex flex-col items-center mt-25 md:mt-0 md:justify-center p-4 text-center">
+        <div className="w-16 h-16 bg-amber-200 rounded-full flex items-center justify-center mb-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -33,7 +33,7 @@ const Conversation: React.FC = () => {
         <p className="text-gray-500 mb-6 max-w-sm">
           Type a message below to start exploring ancient Ayurvedic wisdom with VedaWell.
         </p>
-        <div className="p-4 rounded-lg text-sm md:text-base bg-white shadow-sm border border-amber-200 max-w-md text-center">
+        <div className="p-4 rounded-lg text-sm md:text-base bg-amber-50 shadow-sm border border-amber-200 max-w-md text-center">
           <p className="mb-3 text-lg">
             नमस्ते 🙏 Welcome to VedaWell
           </p>

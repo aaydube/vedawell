@@ -1,5 +1,6 @@
 import React from 'react';
 import { Message as MessageType } from '../types';
+import ReactMarkdown from 'react-markdown';
 
 interface MessageProps {
   message: MessageType;
@@ -8,10 +9,22 @@ interface MessageProps {
 const Message: React.FC<MessageProps> = ({ message }) => {
   const isAssistant = message.role === 'assistant';
 
+  function cleanKeepLines(rawAnswer:string) {
+    return rawAnswer
+    .replace(/\u200b/g, '')
+    .replace(/\r?\n{2,}/g, '\n')
+    .replace(/[ \t]+\n/g, '\n')
+    .replace(/\n[ \t]+/g, '\n')
+    .split('\n')
+    .map(line => line.trim().replace(/^\d+\.\s*/, ''))
+    .filter(line => line.length > 0)
+    .join(' \n ');
+}
+
   return (
     <div
-      className={`flex w-full px-4 py-6 border-b border-amber-100 transition-colors duration-200 ${
-        isAssistant ? 'bg-amber-50' : 'bg-white'
+      className={`flex w-full px-4 py-6 rounded-xl border-b border-amber-100 transition-colors duration-200 ${
+        isAssistant ? 'bg-amber-100 md:mb-5' : 'bg-amber-50'
       }`}
       aria-label={`${isAssistant ? 'VedaWell' : 'You'} message`}
     >
@@ -58,8 +71,8 @@ const Message: React.FC<MessageProps> = ({ message }) => {
           )}
         </div>
 
-        <div className={`prose prose-sm max-w-none whitespace-pre-wrap text-gray-800`}>
-          <p>{message.content}</p>
+        <div className={`prose prose-sm max-w-none whitespace-pre-wrap text-amber-900 ${!isAssistant ? "text-gray-800" : "" }`}>
+          <ReactMarkdown>{cleanKeepLines(message.content )}</ReactMarkdown>
         </div>
       </div>
     </div>

@@ -26,7 +26,7 @@ app.add_middleware(
 db = load_vector_store()
 
 # STEP 2: Setup LLM with the correct parameters
-llm = ChatGroq(model="llama-3.1-8b-instant")
+llm = ChatGroq(model="llama-3.3-70b-versatile")
 
 # STEP 3: Create Retrieval QA chain
 qa_chain = RetrievalQA.from_chain_type(

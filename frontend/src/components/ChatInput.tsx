@@ -35,23 +35,23 @@ const ChatInput: React.FC = () => {
   };
 
   return (
-    <div className="border-t border-amber-200 p-4 bg-white">
-      <form onSubmit={handleSubmit} className="max-w-3xl mx-auto relative">
+    <div className="border border-amber-600 absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-amber-200 p-4 rounded-2xl w-85 md:w-200 z-50 shadow-lg ">
+      <form onSubmit={handleSubmit} className="w-full mx-auto relative">
         <textarea
           ref={textareaRef}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Ask about Ayurvedic wisdom..."
-          className="w-full border border-amber-200 rounded-lg px-4 py-3 pr-16 resize-none overflow-hidden focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+          className="w-full text-gray-800 md:px-4 md:py-3 lg:pr-16 resize-none overflow-hidden outline-none"
           rows={1}
           disabled={isTyping}
         />
-        <div className="absolute right-2 bottom-3 flex space-x-2">
+        <div className="absolute right-1  bottom-0.5 md:bottom-3 flex space-x-2">
           <button
             type="submit"
             disabled={!message.trim() || isTyping}
-            className={`p-2 rounded-full ${
+            className={`p-2 rounded-full  ${
               !message.trim() || isTyping
                 ? 'text-gray-400 cursor-not-allowed'
                 : 'bg-amber-600 text-white hover:bg-amber-700'
@@ -74,7 +74,7 @@ const ChatInput: React.FC = () => {
           </button>
         </div>
       </form>
-      <div className="max-w-3xl mx-auto mt-2 text-center text-xs text-gray-500">
+      <div className="max-w-3xl mx-auto mt-2 hidden md:block text-center text-xs text-gray-500">
         <span>VedaWell integrates ancient wisdom with modern understanding</span>
       </div>
     </div>
